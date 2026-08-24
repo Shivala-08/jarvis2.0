@@ -13,7 +13,7 @@ function publicName(serverName: string, rawName: string): string {
 }
 
 describe('Voicebox MCP connection (requires running container)', () => {
-  const VOICEBOX_URL = 'http://127.0.0.1:17600'
+  const VOICEBOX_URL = 'http://127.0.0.1:17493'
 
   it('health endpoint returns healthy', async () => {
     const resp = await fetch(`${VOICEBOX_URL}/health`)

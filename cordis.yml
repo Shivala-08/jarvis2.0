@@ -4,14 +4,13 @@ plugins:
   - name: '@deepseek-ai/dsh-jarvis-models'
 
   # Voicebox MCP — Phase 4
-  # Discovered runtime endpoint: http://127.0.0.1:17600/mcp (port differs from
-  # documented 17493 due to Docker host-side remapping)
+  # Native Voicebox.app running on port 17493 (Docker remaps to 17600)
   - id: mcp-voicebox
     name: '@deepseek-ai/dsh-mcp-client'
     config:
       serverName: voicebox
       transport: streamable-http
-      url: http://127.0.0.1:17600/mcp
+      url: http://127.0.0.1:17493/mcp
       toolCallTimeoutMs: 120000
       reconnect:
         enabled: true
