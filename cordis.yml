@@ -1,3 +1,4 @@
 # Plugins get appended here phase by phase. Nothing is ever added to this
 # file for a plugin that doesn't yet pass its own phase's exit check.
-plugins: []
+plugins:
+  - name: '@deepseek-ai/dsh-jarvis-models'
