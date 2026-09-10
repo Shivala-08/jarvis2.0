@@ -57,7 +57,7 @@ jarvis optimize skills --policy dspy
 - `jarvis doctor` — confirms engines and health
 - `jarvis skill list` — confirms 3 custom skills
 - `jarvis serve` — starts the API server on port 8000
-- HUD `jarvis.html` — connects to port 8000
+- HUD `index.html` — connects to port 8000
 
 ## Files Created/Modified
 
@@ -92,5 +92,5 @@ All legacy DSH artifacts removed:
 1. `jarvis serve` to start the API server
 2. `jarvis bench skills --max-samples 5 --seeds 42` to measure effectiveness
 3. `jarvis optimize skills --policy dspy` to auto-tune
-4. Open `plugins/jarvis-hud/public/jarvis.html` in browser for HUD
+4. Open `plugins/jarvis-hud/public/index.html` via the static server (`pnpm --filter @jarvis/hud dev`, port 8080) for HUD
 5. Run `jarvis ask "..."` to test the agent

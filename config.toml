@@ -5,8 +5,9 @@
 default = "ollama"
 
 [intelligence]
-default_model = "qwen3.5:9b"
-fallback_model = "openrouter/auto"
+# Mirrors the authoritative ~/.openjarvis/config.toml (jarvis doctor reads that one)
+default_model = "ornith:9b"
+fallback_model = "qwen3.5:9b"
 
 [agent]
 default_agent = "orchestrator"

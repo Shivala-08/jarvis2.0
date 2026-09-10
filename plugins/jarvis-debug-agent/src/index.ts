@@ -8,6 +8,14 @@
  *
  * Phase 7 of the Jarvis rebuild.
  *
+ * ⚠ SCAFFOLDING — NOT AUTONOMOUS.
+ * The current implementation only REPRODUCES failures and confirms when a
+ * repro passes again. It does not apply fixes: the fix-application step is
+ * a placeholder, the debug loop breaks after the first cycle regardless of
+ * `maxCycles`, and `root_cause` is a heuristic keyword match. Until fix
+ * application is wired in, nothing downstream may treat this agent's
+ * `resolved: true` as evidence of an applied fix — only of a passing repro.
+ *
  * @module
  */
 
