@@ -1,8 +1,12 @@
 /**
  * HUD State — typed interface for all dynamic HUD data.
  *
- * Every component consumes HudState. No hardcoded values.
- * The adapter replaces this with real DSH state.
+ * This file is the SINGLE SOURCE OF TRUTH for the HUD state shape.
+ * `public/state/types.js` is generated from it by `pnpm build`
+ * (esbuild) — never edit that file by hand.
+ *
+ * Every panel consumes HudState. The adapter replaces this with real
+ * OpenJarvis state.
  *
  * @module
  */
@@ -10,6 +14,8 @@
 /** Connection state. */
 export interface ConnectionState {
   status: 'disconnected' | 'connecting' | 'connected' | 'error'
+  /** Boolean mirror of status, used by runtime consumers (adapter JS). */
+  connected: boolean
   latency_ms: number | null
   last_connected_at: string | null
 }
@@ -17,7 +23,7 @@ export interface ConnectionState {
 /** Session state. */
 export interface SessionState {
   session_id: string | null
-  status: 'idle' | 'active' | 'paused'
+  status: 'idle' | 'active' | 'paused' | 'running' | 'ready' | 'error'
   duration_ms: number
   started_at: string | null
 }
@@ -76,6 +82,45 @@ export interface StepState {
   escalation_reason: string | null
 }
 
+/** Token/cost telemetry (mirrors /v1/telemetry/stats + /v1/budget). */
+export interface TelemetryState {
+  total_tokens: number
+  total_cost: number
+  total_requests: number
+  tokens_today: number
+  requests_this_hour: number
+  avg_throughput_tok_per_sec: number
+  total_latency: number
+}
+
+/** One step inside a trace from /v1/traces (loose — backend-owned shape). */
+export interface TraceStep {
+  step_type?: string | null
+  [key: string]: unknown
+}
+
+/** One task-lifecycle record from /v1/traces. */
+export interface TraceRecord {
+  id?: string | null
+  query?: string | null
+  outcome?: string | null
+  agent?: string | null
+  engine?: string | null
+  model?: string | null
+  created_at?: string | null
+  duration_ms?: number | null
+  total_tokens?: number | null
+  steps?: TraceStep[]
+}
+
+/** One managed-agent record from /v1/managed-agents. */
+export interface ManagedAgentRecord {
+  id?: string
+  name?: string
+  status?: string
+  [key: string]: unknown
+}
+
 /** Boot sequence state. */
 export type BootPhase =
   | 'initializing'
@@ -97,6 +142,9 @@ export interface HudState {
   memory: MemoryState
   voice: VoiceState
   steps: StepState
+  telemetry: TelemetryState
+  traces: TraceRecord[]
+  agents: ManagedAgentRecord[]
 }
 
 /** Create initial HUD state with defaults. */
@@ -105,6 +153,7 @@ export function createInitialHudState(): HudState {
     boot: 'initializing',
     connection: {
       status: 'disconnected',
+      connected: false,
       latency_ms: null,
       last_connected_at: null,
     },
@@ -154,5 +203,16 @@ export function createInitialHudState(): HudState {
       escalated: false,
       escalation_reason: null,
     },
+    telemetry: {
+      total_tokens: 0,
+      total_cost: 0,
+      total_requests: 0,
+      tokens_today: 0,
+      requests_this_hour: 0,
+      avg_throughput_tok_per_sec: 0,
+      total_latency: 0,
+    },
+    traces: [],
+    agents: [],
   }
 }

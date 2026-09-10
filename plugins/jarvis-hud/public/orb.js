@@ -716,7 +716,7 @@ function animate() {
 // OpenJarvis Adapter — maintains typed HudState
 const openjarvisAdapter = createOpenJarvisAdapter({ baseUrl: CONFIG.apiUrl });
 
-function connectDSH() {
+function connectOpenJarvis() {
   openjarvisAdapter.connect();
   
   // Subscribe to state changes and update all panels
@@ -753,13 +753,24 @@ function setAgentState(newState) {
       break;
     case 'error':
       state.orbSpeed = 0;
-      // Flash red briefly
-      orbGroup.children.forEach(child => {
-        if (child.material) {
+      // F1 fix: flash red WITHOUT destroying each material's original color.
+      // Previously every child was repainted to C_BRIGHT after the flash,
+      // permanently flattening C_MID/C_DIM/C_FAINT shading.
+      orbGroup.traverse(child => {
+        if (child.material && child.material.color) {
+          if (child.userData._origColorHex === undefined) {
+            child.userData._origColorHex = child.material.color.getHex();
+          }
           child.material.color.setHex(0xff3333);
-          setTimeout(() => child.material.color.setHex(CONFIG.C_BRIGHT), 500);
         }
       });
+      setTimeout(() => {
+        orbGroup.traverse(child => {
+          if (child.material && child.material.color && child.userData._origColorHex !== undefined) {
+            child.material.color.setHex(child.userData._origColorHex);
+          }
+        });
+      }, 500);
       break;
   }
 }
@@ -950,8 +961,8 @@ function bootSequence() {
       // Start animation
       animate();
       
-      // Connect to DSH
-      connectDSH();
+      // Connect to OpenJarvis
+      connectOpenJarvis();
       
       // Initialize hand tracking
       initHandTracking();

@@ -12,14 +12,11 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "open public/index.html",
+    "dev": "./start-server.sh",
     "test": "vitest run"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
     "vitest": "^3.2.6"
-  },
-  "dependencies": {
-    "three": "^0.185.1"
   }
 }
