@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Three.js Test</title>
+  <style>
+    body { background: #000; margin: 0; overflow: hidden; }
+    #info { position: fixed; top: 10px; left: 10px; color: #ffaa30; font-family: monospace; z-index: 10; }
+  </style>
+</head>
+<body>
+  <div id="info">Loading Three.js...</div>
+  <script src="three.min.js"></script>
+  <script>
+    try {
+      var info = document.getElementById('info');
+      info.textContent = 'Three.js loaded: ' + (typeof THREE !== 'undefined' ? 'YES' : 'NO');
+
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.z = 5;
+
+      var renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      var geo = new THREE.IcosahedronGeometry(1.5, 2);
+      var mat = new THREE.MeshBasicMaterial({ color: 0xffaa30, wireframe: true, transparent: true, opacity: 0.6 });
+      var mesh = new THREE.Mesh(geo, mat);
+      scene.add(mesh);
+
+      info.textContent += ' | Orb created';
+
+      function animate() {
+        requestAnimationFrame(animate);
+        mesh.rotation.y += 0.005;
+        mesh.rotation.x += 0.002;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      info.textContent += ' | Rendering ✓';
+    } catch(e) {
+      document.getElementById('info').textContent = 'ERROR: ' + e.message;
+    }
+  </script>
+</body>
+</html>

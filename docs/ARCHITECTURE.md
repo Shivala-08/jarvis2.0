@@ -1,11 +1,19 @@
 # JARVIS ARCHITECTURE
 
 ```
-JARVIS
+OpenJarvis (5 Primitives)
 │
-├── UI              (Holographic Core, HUD, Panels, Animations — Phase 10)
-├── Voice            (Voicebox MCP — Phase 4)
-├── Agent             (Intent, Planning, Tool Selection, Memory — Phases 5, 6, 7)
-├── Tools              (Coding, Browser, Files, System — Phase 7)
-└── Infrastructure      (Config, Logging, Errors, Tests — every phase)
+├── Intelligence    (5 cloud engines + auto-routing)
+├── Engine          (Inference runtime: Ollama, Nim, Cloud)
+├── Agents          (orchestrator, code-assistant, loop_guard)
+├── Tools & Memory  (SQLite storage, MCP, skill system)
+└── Learning        (bench, optimize, traces)
+
+Custom Skills:
+├── adhd-zero-guilt-scheduling  (calm reframing)
+├── identity-context            (user identity injection)
+└── hud-state-bridge            (holographic HUD state)
+
+HUD: http://127.0.0.1:8000 (OpenJarvis serve)
+Migration: docs/JARVIS_OPENJARVIS_MIGRATION.md
 ```
