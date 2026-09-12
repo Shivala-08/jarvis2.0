@@ -1,0 +1,46 @@
+# JARVIS 2.0 — OpenJarvis Project Configuration
+# Replaces DSH cordis.yml plugin architecture
+
+[engine]
+default = "ollama"
+
+[intelligence]
+default_model = "qwen3.5:9b"
+fallback_model = "openrouter/auto"
+
+[agent]
+default_agent = "orchestrator"
+max_turns = 15  # Hard step cap matching original 15-step limit
+
+[tools]
+enabled = ["code_interpreter", "file_read", "file_write", "shell_exec", "web_search", "think", "calculator", "memory"]
+
+[skills]
+enabled = true
+auto_discover = true
+active = "*"
+
+# Custom skills for JARVIS-specific capabilities
+[skills.custom]
+adhd-zero-guilt-scheduling = true
+identity-context = true
+hud-state-bridge = true
+
+[memory]
+backend = "sqlite"
+db_path = "~/.openjarvis/memory.db"
+
+[server]
+host = "127.0.0.1"
+port = 8000
+
+[traces]
+enabled = true
+db_path = "~/.openjarvis/traces.db"
+
+# HUD Integration
+[hud]
+enabled = true
+port = 8000
+rest_url = "http://127.0.0.1:8000"
+boot_phases = ["initializing", "connecting", "session_detected", "synchronizing", "ready", "dashboard"]

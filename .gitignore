@@ -1,6 +1,13 @@
 node_modules/
 dist/
-.dsh/
-dsh-source/
 voicebox-source/
 vault/.obsidian/
+.env
+.env.*
+
+# Memory runtime data
+.jarvis/
+
+.DS_Store
+results/
+
