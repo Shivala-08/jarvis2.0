@@ -2,12 +2,16 @@
 # Replaces DSH cordis.yml plugin architecture
 
 [engine]
-default = "ollama"
+default = "cloud"   # cloud-first; ollama stays installed for offline work
+# NVIDIA NIM is a native OpenJarvis engine (engine_id="nim", OpenAI-compatible,
+# https://integrate.api.nvidia.com). Set NIM_API_KEY to enable; doctor then
+# lists 80+ nvidia/* models. Also reachable indirectly via openrouter/nvidia/*.
+# Cerebras: no native engine — use openrouter/cerebras/* via OpenRouter.
 
 [intelligence]
 # Mirrors the authoritative ~/.openjarvis/config.toml (jarvis doctor reads that one)
-default_model = "ornith:9b"
-fallback_model = "qwen3.5:9b"
+default_model = "openrouter/auto"
+fallback_model = "openrouter/openai/gpt-4o"
 
 [agent]
 default_agent = "orchestrator"
