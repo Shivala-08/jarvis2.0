@@ -44,8 +44,20 @@ export function createOpenJarvisAdapter(config = { baseUrl: 'http://127.0.0.1:80
     'loop-guard-node',
   ])
 
+  // H2 fix: dedup key for telemetry accumulation. tool_count and
+  // active_tools must only advance when the newest trace actually shows
+  // NEW work (different trace id, or more steps in the same trace),
+  // otherwise every 3s poll re-counts the same steps forever.
+  const lastCounted = { id: null, steps: 0 }
+
   async function fetchJson(path) {
-    const res = await fetch(`${baseUrl}${path}`)
+    // H4 fix: abort hung requests so `running` never sticks true and
+    // polling silently dies. 5s budget per endpoint.
+    const res = await fetch(`${baseUrl}${path}`, {
+      signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout
+        ? AbortSignal.timeout(5000)
+        : undefined,
+    })
     if (!res.ok) return null
     return res.json()
   }
@@ -80,12 +92,21 @@ export function createOpenJarvisAdapter(config = { baseUrl: 'http://127.0.0.1:80
       state.model.status = t.outcome === 'error' ? 'error' : 'idle'
 
       const tools = stepTypes.filter((s) => s === 'tool' || s === 'shell')
-      if (tools.length) {
+      const traceId = t.id || null
+      const isNewWork = traceId !== lastCounted.id || stepTypes.length > lastCounted.steps
+      if (tools.length && isNewWork) {
         state.tools.last_tool = tools[tools.length - 1]
         state.tools.last_tool_at = new Date().toISOString()
         state.tools.tool_count += tools.length
-        state.tools.active_tools = [...new Set([...state.tools.active_tools, ...tools])]
+        // A new trace means a new task: replace the tool set, don't grow it.
+        if (traceId !== lastCounted.id) {
+          state.tools.active_tools = [...new Set(tools)]
+        } else {
+          state.tools.active_tools = [...new Set([...state.tools.active_tools, ...tools])]
+        }
       }
+      lastCounted.id = traceId
+      lastCounted.steps = stepTypes.length
 
       state.steps.current = stepTypes.length
       state.steps.max = 15
